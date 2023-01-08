@@ -148,58 +148,56 @@ xlim([0.5 1.5])
 ***
 $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [ (Revenir au sommaire) ](#retour)
 ***
-
-#### $~~~~~~$ **7- Augmenter l’intensité de bruit puis afficher le spectre. Interpréter le résultat obtenu.** 
+<a name="part3"></a>
+### **Amélioration du rapport signal sur bruit:**
+##### Le signal ECG est également atteint par des parasites en provenance de l’activité musculaire extracardiaque du patient. La quantité de bruit est proportionnelle à la largeur de bande du signal ECG. Une bande passante élevée donnera plus de bruit dans les signaux, et limiter la bande passante peut enlever des détails importants du signal. 
+#### $~~~~~~$ **7. Chercher un compromis sur la fréquence de coupure, qui permettra de préserver la forme du signal ECG et réduire au maximum le bruit. Tester différents choix, puistracer et commenter les résultats.** 
 ***
 ```matlab
 %qst 7
 
-bruit_haute_intensite = 50*randn(size(x));
-xnoise= x+bruit_haute_intensite;
-subplot(1,2,1)
-plot(bruit_haute_intensite)
-title('bruit haute intensite');
-subplot(1,2,2)
-plot(fshift,fftshift(abs(fft(xnoise))));
-title('spectre du signal bruité');
+pass_bas = zeros(size(x));
+fcb = 30;
+index_hcb = ceil(fcb*N/fs);
+pass_bas(1:index_hcb)=1;
+pass_bas(N-index_hcb+1:N)=1;
+ecg3_freq = pass_bas.*fft(ecg2);
+ecg3 =ifft(ecg3_freq,"symmetric");
 
 ```
-![7](https://user-images.githubusercontent.com/106840796/210172657-a91ec71a-780f-40a1-917d-186b483fcfa9.PNG)
 ***
  ### **Explication :**
- ###### xnoise est un bruit généré par la fonction randn() qui suit la loi gaussienne de moyenne 0 et d’écart type 1. 97% des valeurs générées par la fonction randn() se situent entre -3 (moyenne - 3* ecartType = 0-3*1=-3) et 3 (moyenne + 3* ecartType = 0+3*1=3), alors , on a multiplié par 50 pour augmenter l’intensité de bruit , maintenant , les valeurs générées se situent entre -150 et 150 .
+ ###### explique .
 
 ***
 $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [ (Revenir au sommaire) ](#retour)
 ***
-<a name="part2"></a>
-### **2. Analyse fréquentielle du chant du rorqual bleu**
-***
-##### Il existe plusieurs signaux dont l’information est encodée dans des sinusoïdes. Les ondes sonores est un bon exemple. Considérons maintenant des données audios collectées à partir de microphones sous - marins au large de la Californie. On cherche à détecter à travers une analyse de Fourier le contenu fréquentiel d’une onde sonore émise pas un rorqual bleu.
-***
-#### $~~~~~~$ **1- Chargez, depuis le fichier ‘bluewhale.au’, le sous-ensemble de données qui 
-correspond au chant du rorqual bleu du Pacifique. En effet, les appels de rorqual bleu 
-sont des sons à basse fréquence, ils sont à peine audibles pour les humains. Utiliser 
-la commande audioread pour lire le fichier. Le son à récupérer correspond aux indices 
-allant de 2.45e4 à 3.10e4.** 
+#### $~~~~~~$ **8. Visualiser une période du nouveau signal filtré ecg3 et identifier autant d'ondes que possible dans ce signal (Voir la partie introduction).** 
 ***
 ```matlab
-%qst 1
+%qst 8
 
-[x,fe]=audioread("bluewhale.au");
-chant = x(2.45e4:3.10e4);
-
+subplot(2,1,1)
+plot(t,ecg,"linewidth",1.5);
+xlim([0.5 1.5])
+subplot(2,1,2)
+plot(t,ecg3);
+title("signal filtré")
+xlim([0.5 1.5])
 
 ```
-
+![8](https://user-images.githubusercontent.com/106840796/211207559-cb0936cf-9aee-40c5-809e-1675a54ab92f.PNG)
 ***
  ### **Explication :**
- ###### la commande audioread sert a lire le fichier "bluewhale.au" pour construire son signal chant qui correspond aux indices allant de 2.45e4 à 3.10e4 et la frequence fe .
+ ###### explique qst 8 .
 
 ***
 $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [ (Revenir au sommaire) ](#retour)
 ***
-#### $~~~~~~$ **2- Ecoutez ce signal en utilisant la commande sound, puis visualisez-le.** 
+<a name="part3"></a>
+### **Amélioration du rapport signal sur bruit:**
+##### La fréquence cardiaque peut être identifiée à partir de la fonction d'autocorrélation du signal ECG. Cela se fait en cherchant le premier maximum local après le maximum global (à tau = 0) de cette fonction.
+#### $~~~~~~$ **9. Ecrire un programme permettant de calculer l’autocorrélation du signal ECG, puis de chercher cette fréquence cardiaque de façon automatique. Utiliser ce programme sur le signal traité ecg3 ou ecg2 et sur le signal ECG non traité. NB : il faut limiter l’intervalle de recherche à la plage possible de la fréquence cardiaque.** 
 ***
 ```matlab
 %qst 2
