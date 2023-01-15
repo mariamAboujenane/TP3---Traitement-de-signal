@@ -74,7 +74,7 @@ ecg1 =ifft(ecg1_freq,"symmetric");
 ```
 ***
  ### **Explication :**
- ###### eplication de passe haut.
+ ######  Pour supprimer les bruits à très basse fréquence dues aux mouvements du corps,on a utilisé la fonction fft pour convertir le signal de domaine temporel au domaine fréquentiel.Puis , on a créé un filtre passe-haut en réglant les fréquences inférieures à 0.5Hz à zéro.Enfin , on a utilisé la fonction ifft pour convertir le signal filtré de nouveau au domaine temporel.
 ***
 $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [ (Revenir au sommaire) ](#retour)
 ***
@@ -93,7 +93,7 @@ title("signal filtré")
 ![qst3](https://user-images.githubusercontent.com/106840796/211205328-02e3a443-a92c-48d3-ae2e-6d98a7f4bed9.PNG)
 ***
  ### **Explication :**
- ###### on peut maintenant visualiser le résultat du filtrage des basses  frequences sur le signal ecg en utilisant la fonction "plot" de Matlab pour tracer le signal filtré grace au filtre idéal passe-haut.
+ ###### lorsqu on a utilisé un filtre passe-haut pour supprimer le bruit à très basse fréquence dans un signal ECG,nous remarquons une amélioration de la qualité du signal en enlevant les vibrations indésirables ou les bruits de fond.
 ***
 $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [ (Revenir au sommaire) ](#retour)
 ***
@@ -118,14 +118,11 @@ ecg2 =ifft(ecg2_freq,"symmetric");
 ```
 ***
  ### **Explication :**
- ###### explication elimination de 50hz.
-
+ ###### utilise un filtre notch pour supprimer une bande de fréquence spécifique 50 hz dans un signal ECG. Le filtre notch est créé en utilisant un vecteur "Notch" de la même taille que le signal d'entrée "x", puis en remplaçant les valeurs correspondant à la fréquence cible (fcn) et aux deux fréquences adjacentes par zéro. Le signal d'entrée est ensuite converti en domaine fréquentiel en utilisant la FFT (Fast Fourier Transform), le filtre notch est appliqué en multipliant le signal fréquentiel par le vecteur "Notch", puis le signal filtré est converti de nouveau en domaine temporel en utilisant la IFFT (Inverse Fast Fourier Transform) avec l'option "symmetric" pour conserver la symétrie du signal d'origine.
 ***
 $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [ (Revenir au sommaire) ](#retour)
 ***
-##### La puissance du signal en fonction de la fréquence (densité spectrale de puissance)est une métrique couramment utilisée en traitement du signal. Elle est définie comme étant le carré du module de la TFD, divisée par le nombre d'échantillons de fréquence.
-***
-#### $~~~~~~$ **6- Calculez puis tracer le spectre de puissance du signal bruité centré à la fréquence zéro.** 
+#### $~~~~~~$ **6. Visualiser le signal ecg2 après filtrage. ** 
 ***
 ```matlab
 % qst 6
@@ -143,7 +140,7 @@ xlim([0.5 1.5])
 ![5](https://user-images.githubusercontent.com/106840796/211205813-348af2f3-b9c6-4924-a9c1-2de2dba712e0.PNG)
 ***
  ### **Explication :**
- ###### explique.
+ ###### Lorsqu on a utilisé un filtre notch pour supprimer les interférences des lignes électriques de fréquence 50Hz dans un signal ECG, on a remarqué une amélioration de la qualité du signal en enlevant les vibrations indésirables ou les bruits de fond causés par les lignes électriques. Cela permet de mieux visualiser les variations de fréquence cardiaque normales et les anomalies éventuelles. Cela permet également d'améliorer la précision des mesures de la fréquence cardiaque. on peut également remarquer que les oscillations de fréquence 50Hz qui étaient présentes dans le signal d'origine ont été supprimées ou fortement atténuées .
 
 ***
 $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [ (Revenir au sommaire) ](#retour)
@@ -167,7 +164,7 @@ ecg3 =ifft(ecg3_freq,"symmetric");
 ```
 ***
  ### **Explication :**
- ###### explique .
+ ###### apres plusieurs tests , on a choisi 30hz comme frequence de coupure , puis , on a utilisé un filtre passe-bas pour laisser passer les fréquences inférieures à une fréquence de coupure spécifique dans un signal ECG. Le filtre passe-bas est créé en utilisant un vecteur "pass_bas" de la même taille que le signal d'entrée "x", puis en remplaçant les valeurs correspondant aux fréquences inférieures à la fréquence de coupure (fcb) par un. Le signal d'entrée est ensuite converti en domaine fréquentiel en utilisant la FFT (Fast Fourier Transform), le filtre passe-bas est appliqué en multipliant le signal fréquentiel par le vecteur "pass_bas", puis le signal filtré est converti de nouveau en domaine temporel en utilisant la IFFT (Inverse Fast Fourier Transform) avec l'option "symmetric" pour conserver la symétrie du signal d'origine.
 
 ***
 $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [ (Revenir au sommaire) ](#retour)
@@ -189,78 +186,56 @@ xlim([0.5 1.5])
 ![8](https://user-images.githubusercontent.com/106840796/211207559-cb0936cf-9aee-40c5-809e-1675a54ab92f.PNG)
 ***
  ### **Explication :**
- ###### explique qst 8 .
+ ###### nous observons un changement dans l'apparence du signal sur le graphe. Le signal filtré aura une forme plus lisse et moins de détails dans les hautes fréquences. Les oscillations à haute fréquence qui étaient présentes dans le signal d'origine auront été atténuées ou supprimées. Cela peut rendre plus facile de visualiser les variations de fréquence cardiaque normales et les anomalies éventuelles.
 
 ***
 $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [ (Revenir au sommaire) ](#retour)
 ***
 <a name="part3"></a>
-### **Amélioration du rapport signal sur bruit:**
+### **Identification de la fréquence cardiaque avec la fonction d’autocorrélation :**
 ##### La fréquence cardiaque peut être identifiée à partir de la fonction d'autocorrélation du signal ECG. Cela se fait en cherchant le premier maximum local après le maximum global (à tau = 0) de cette fonction.
 #### $~~~~~~$ **9. Ecrire un programme permettant de calculer l’autocorrélation du signal ECG, puis de chercher cette fréquence cardiaque de façon automatique. Utiliser ce programme sur le signal traité ecg3 ou ecg2 et sur le signal ECG non traité. NB : il faut limiter l’intervalle de recherche à la plage possible de la fréquence cardiaque.** 
 ***
 ```matlab
-%qst 2
+% qst 9
 
-sound(chant,fe)
-N = length(chant);
-te = 1/fe;
-t = (0:N-1)*(10*te);
-plot(t,chant)
-title('signal du chant du rorqual bleu :');
+%autocorrélation de signal ECG
+[c,lags] = xcorr(ecg3,ecg3);
+
+%stem(lags/fs,c)
+E = length(c); %la longueur de la fonction d'autocorrélation
+Vector = [0]; %initialisation d'un vecteur
+for n = 1:E
+   if c(n) > 10
+       Vector(end+1) = c(n); %l'ajout de valeur au vecteur
+   end
+   %pour éliminer les valeurs qui égals au 0
+   M = max(Vector);
+   in = find(c == M);
+   s = lags(in);
+   if s <12
+       Vector(Vector == M) = [];
+   end
+end
+
+%extraction de la valeur max de vecteur
+frequence = (s/fs)*60; %calculer la fréquence
+frequence_min=30;
+frequence_max=160;
+if frequence > frequence_min & frequence < frequence_max
+  fprintf('la freqence cardiaque de ce patient est :%f .',frequence);
+end
 
 ```
-![part2 2](https://user-images.githubusercontent.com/106840796/210175084-9a5df19c-38fc-4246-b8c9-d72d3e132560.PNG)
 ***
  ### **Explication :**
- ###### sound(xnoise , fe) envoie le signal audio y au haut-parleur à sa fréquence d’échantillonnage fe .
- ###### on a compressé le signal en multipliant le temps par 10 en utilisant Matlab, mais cette technique ne fera que réduire la durée du signal, mais ne supprimera pas les données inutiles ou redondantes.
-
+ ###### on a utilisé la technique d'autocorrélation pour estimer la fréquence cardiaque d'un signal ECG filtré par la fonction "xcorr" pour calculer la fonction d'autocorrélation du signal filtré. ensuite on a utilisé une boucle pour parcourir les valeurs de la fonction d'autocorrélation, et enregistre les valeurs supérieures à 10 dans un vecteur, et on a  calculé ensuite la valeur maximale du vecteur et trouve son indice dans la fonction d'autocorrélationpour calculer la fréquence cardiaque en utilisant l'échantillonnage du signal, et vérifie que la fréquence cardiaque est dans une plage acceptable (30 à 160 battements par minute) avant de l'afficher .
 ***
 $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [ (Revenir au sommaire) ](#retour)
 ***
-##### La TFD peut être utilisée pour identifier les composantes fréquentielles de ce signal audio. Dans certaines applications qui traitent de grandes quantités de données avec fft, il est courant de redimensionner l'entrée de sorte que le nombre d'échantillons soit une puissance de 2. fft remplit automatiquement les données avec des zéros pour augmenter la taille de l'échantillon. Cela peut accélérer considérablement le calcul de la transformation.
+#### $~~~~~~$ **10. Votre programme trouve-t-il le bon pouls ? Commenter** 
 ***
-#### $~~~~~~$ **3- Spécifiez une nouvelle longueur de signal qui sera une puissance de 2, puis tracer 
-la densité spectrale de puissance du signal.** 
-***
-```matlab
-%qst 3 
-
-% Longueur du signal
-N = length(chant);
-
-% Calcul de la puissance de 2 supérieure à N
-nouvelle_longueur = nextpow2(N);
-N=nouvelle_longueur;
-densite_spectrale= abs(fft(chant)).^2/N; 
-f = (0:floor(N/2))*(fe/N)/10;
-plot(f,densite_spectrale(1:floor(N/2)+1));
-title('densité spectrale de puissance du signal:');
-
-```
-![3 new](https://user-images.githubusercontent.com/106840796/211200315-a17c1883-b059-411f-9052-aefc8e0f8e49.PNG)
-***
- ### **Explication :**
- ###### La fonction "nextpow2" en MATLAB renvoie la puissance de 2 la plus proche supérieure à un nombre donné. Elle est souvent utilisée pour trouver la puissance de 2 la plus proche supérieure à la longueur d'un signal numérique, ce qui peut être utile lors de l'utilisation de certaines techniques d'analyse de signal qui nécessitent que la longueur du signal soit une puissance de 2.
-***
-$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [ (Revenir au sommaire) ](#retour)
-***
-#### $~~~~~~$ **4- Déterminer à partir du tracé, la fréquence fondamentale du gémissement de rorqual bleu.** 
-***
-```matlab
-% qst 4
-
-% Recherche de la fréquence fondamentale
-[~, index] = max(densite_spectrale);
-freqence_fondamentale = f(index)
-
-```
-
-***
- ### **Explication :**
- ###### d apres le tracé , la frequence fondamentale du gémissement est ensuite trouvée en cherchant la fréquence avec la valeur maximale dans le spectre de puissance qui est egale a 50hz .
-
+ ###### non , le programme ne trouve pas de bon pouls , une fréquence cardiaque normale se situe entre 60 et 100 battements par minute , cependant , notre programme trouve une freqence de 54,84 battements par minute , ce qui signifie que le cœur bat à une fréquence anormalement faible. 
 ***
 $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$ [ (Revenir au sommaire) ](#retour)
 ***
